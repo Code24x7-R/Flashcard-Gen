@@ -19,6 +19,17 @@ const zoomOverlay = document.getElementById('zoomOverlay');
 const quizOverlay = document.getElementById('quizOverlay');
 const quizModal = document.getElementById('quizModal');
 
+// Export Copy Modal elements
+const exportCopyModalOverlay = document.getElementById('exportCopyModalOverlay');
+const closeExportCopyModalButton = document.getElementById(
+  'closeExportCopyModalButton',
+);
+const exportTextArea = document.getElementById('exportTextArea');
+const copyExportButton = document.getElementById('copyExportButton');
+const exportFilenameSuggestion = document.querySelector(
+  '.export-filename-suggestion',
+);
+
 // README Modal elements
 const readmeModalOverlay = document.getElementById('readmeModalOverlay');
 const readmeContent = document.getElementById('readmeContent');
@@ -142,6 +153,42 @@ readmeModalOverlay.addEventListener('click', (e) => {
   if (e.target === readmeModalOverlay) {
     closeReadmeModal();
   }
+});
+
+// --- Export Copy Modal ---
+function openExportCopyModal(content, filename) {
+  exportTextArea.value = content;
+  if (exportFilenameSuggestion) {
+    exportFilenameSuggestion.textContent = `Suggested filename: ${filename}`;
+  }
+  exportCopyModalOverlay.classList.add('visible');
+  exportTextArea.select();
+}
+
+function closeExportCopyModal() {
+  exportCopyModalOverlay.classList.remove('visible');
+}
+
+closeExportCopyModalButton.addEventListener('click', closeExportCopyModal);
+exportCopyModalOverlay.addEventListener('click', (e) => {
+  if (e.target === exportCopyModalOverlay) {
+    closeExportCopyModal();
+  }
+});
+
+copyExportButton.addEventListener('click', () => {
+  navigator.clipboard
+    .writeText(exportTextArea.value)
+    .then(() => {
+      copyExportButton.textContent = 'Copied!';
+      setTimeout(() => {
+        copyExportButton.textContent = 'Copy to Clipboard';
+      }, 2000);
+    })
+    .catch((err) => {
+      console.error('Failed to copy text: ', err);
+      copyExportButton.textContent = 'Copy Failed';
+    });
 });
 
 async function displayAppVersion() {
@@ -368,7 +415,7 @@ function createEditForm(cardDiv, cardInner, index) {
   cardInner.appendChild(form);
 }
 
-function handleExportJson() {
+async function handleExportJson() {
   const topic = topicInput.value.trim();
 
   // Sanitize the topic to create a user-friendly filename
@@ -389,6 +436,41 @@ function handleExportJson() {
   };
   const content = JSON.stringify(dataToExport, null, 2);
   const blob = new Blob([content], {type: 'application/json;charset=utf-8'});
+
+  // --- Mobile-First Export Strategy ---
+
+  // 1. Try Web Share API (best for modern mobile)
+  // Check for both share capability and if it can handle files.
+  if (navigator.share && typeof navigator.canShare === 'function') {
+    const file = new File([blob], finalFilename, {type: blob.type});
+    if (navigator.canShare({files: [file]})) {
+      try {
+        await navigator.share({
+          files: [file],
+          title: `Flashcards: ${topic}`,
+          text: `Here are the flashcards for "${topic}".`,
+        });
+        // If share is successful, we're done.
+        return;
+      } catch (error) {
+        // If the user cancels the share sheet, we do nothing.
+        if (error.name === 'AbortError') {
+          return;
+        }
+        // For other errors, we fall through to the next method.
+        console.error('Web Share API failed:', error);
+      }
+    }
+  }
+
+  // 2. Fallback for mobile without Web Share: Copy-to-clipboard modal
+  const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+  if (isMobile) {
+    openExportCopyModal(content, finalFilename);
+    return;
+  }
+
+  // 3. Fallback for desktop: Direct download
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -958,7 +1040,9 @@ function showQuizSummary() {
 document.addEventListener('keydown', (e) => {
   // Handle Escape key to close any open modal
   if (e.key === 'Escape') {
-    if (readmeModalOverlay.classList.contains('visible')) {
+    if (exportCopyModalOverlay.classList.contains('visible')) {
+      closeExportCopyModal();
+    } else if (readmeModalOverlay.classList.contains('visible')) {
       closeReadmeModal();
     } else if (apiKeyModalOverlay.classList.contains('visible')) {
       closeApiKeyModal();

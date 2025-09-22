@@ -736,3 +736,29 @@ footer {
   border-radius: 8px;
   margin: 1em 0;
 }
+
+/* Export Copy Modal Styles */
+#exportCopyModal p {
+  text-align: left;
+}
+#exportCopyModal code {
+  background-color: light-dark(var(--light-secondary-bg), var(--dark-secondary-bg));
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+#exportTextArea {
+  width: calc(100% - 32px);
+  min-height: 200px;
+  max-height: 40vh;
+  resize: vertical;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.9em;
+}
+.export-filename-suggestion {
+  font-size: 0.9em;
+  color: light-dark(var(--light-text-secondary), var(--dark-text-secondary));
+  margin-top: -10px;
+  margin-bottom: 15px;
+  text-align: left;
+}

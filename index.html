@@ -127,5 +127,24 @@
       </div>
     </div>
   </div>
+  <!-- Export Copy Modal (Mobile Fallback) -->
+  <div id="exportCopyModalOverlay" class="modal-overlay">
+    <div id="exportCopyModal" class="modal-content">
+      <button id="closeExportCopyModalButton" class="close-button" aria-label="Close export view">&times;</button>
+      <h2>Export Flashcards</h2>
+      <p>
+        Your browser may not support direct file saving. Please copy the text below and save it as a
+        <code>.json</code> file.
+      </p>
+      <div class="input-group">
+          <label for="exportTextArea" class="sr-only">JSON content of flashcards</label>
+          <textarea id="exportTextArea" readonly></textarea>
+      </div>
+      <p class="export-filename-suggestion"></p>
+      <div class="modal-buttons">
+          <button id="copyExportButton">Copy to Clipboard</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
