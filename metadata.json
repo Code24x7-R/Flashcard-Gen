@@ -1,6 +1,6 @@
 {
   "name": "Flashcard-Gen",
-  "version": "0.0.1.0",
+  "version": "0.0.1.1",
   "description": "Instantly create interactive flashcards for any topic with the power of Gemini! Learn smarter, not harder.",
   "requestFramePermissions": []
 }

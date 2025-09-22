@@ -666,8 +666,10 @@ flashcardsContainer.addEventListener('click', (e) => {
 });
 
 zoomOverlay.addEventListener('click', (e) => {
-  // Close only if the click is on the background overlay itself
-  if (e.target === zoomOverlay) {
+  // A click on the card content should not close the overlay, but a click
+  // on the background should. We detect a background click by checking if
+  // the event target is the overlay element itself.
+  if (e.target.id === 'zoomOverlay') {
     zoomOut();
   }
 });
