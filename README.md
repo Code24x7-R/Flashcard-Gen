@@ -56,7 +56,7 @@ This document serves as both the project's README and its Product Requirements D
 ## 3. Technical Specifications
 
 ### 3.1. Frontend Stack
--   **Language:** TypeScript
+-   **Language:** JavaScript (from TypeScript source)
 -   **Markup:** HTML5
 -   **Styling:** CSS3 (with CSS variables for theming)
 -   **Module Loading:** ES Modules via `<script type="importmap">`
@@ -71,7 +71,7 @@ This document serves as both the project's README and its Product Requirements D
     -   `FileReader API`: For importing local files.
 
 ### 3.3. Data Models
-The application state is managed through the following TypeScript interfaces:
+The application's data models, defined in the original TypeScript source, are as follows:
 ```typescript
 interface Flashcard {
   term: string;
@@ -143,7 +143,7 @@ This application runs entirely in your browser. To use the AI features, you must
 
 This application is a static site and can be easily deployed for free using GitHub Pages.
 
-1.  **Create a GitHub Repository:** If you haven't already, create a new repository on GitHub and push the project files (`index.html`, `index.css`, `index.tsx`, etc.) to it.
+1.  **Create a GitHub Repository:** If you haven't already, create a new repository on GitHub and push the project files (`index.html`, `index.css`, `index.js`, etc.) to it.
 
 2.  **Navigate to Settings:** In your repository's main page on GitHub, click on the **Settings** tab.
 
