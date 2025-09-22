@@ -40,7 +40,13 @@ This document serves as both the project's README and its Product Requirements D
 -   **Session Persistence:** The entire application state (current topic, flashcards, and location data) is automatically saved to the browser's `localStorage`. This ensures the user's work is not lost when they close the tab or refresh the page.
 -   **Clear Functionality:** A "Clear" button allows the user to reset the application to its initial state, clearing the topic, flashcards, and local storage.
 
-### 2.4. User Experience & Design
+### 2.4. Interactive Quiz Mode
+-   **AI-Powered Answer Evaluation:** An interactive study mode to test your knowledge. Instead of requiring an exact match, Quiz Mode uses the `gemini-2.5-flash` model to analyze the user's typed answer for semantic correctness. This provides a more natural and forgiving quiz experience.
+-   **Live Scoring & Progress:** The UI displays the current score and progress through the shuffled deck.
+-   **Reveal Answer:** If an answer is marked incorrect, the user has the option to reveal the correct definition before proceeding.
+-   **Quiz Summary:** At the end of the quiz, a summary screen shows the final score and percentage.
+
+### 2.5. User Experience & Design
 -   **Modern UI:** The interface is clean, intuitive, and inspired by Google's Material Design principles.
 -   **Light & Dark Mode:** The application respects the user's system theme preference for a comfortable viewing experience at any time of day.
 -   **Responsive Design:** The layout adapts smoothly to various screen sizes, from mobile devices to desktops.
@@ -48,7 +54,7 @@ This document serves as both the project's README and its Product Requirements D
 -   **Informative Feedback:** The UI provides clear loading states and error messages to keep the user informed.
 -   **Version Display:** The application's version number is displayed in the footer, making it easy to track updates.
 
-### 2.5 Architecture Advantages
+### 2.6 Architecture Advantages
 -   **Minimal Backend:** The application is a static web app that runs entirely in the user's browser. It avoids the complexity of databases, server-side code, and user account management.
 -   **User-Provided API Keys:** The user provides their own Gemini API key, which is stored locally. This enhances privacy and security, as the key and user data are never processed by an intermediary server.
 -   **Direct API Access:** The web client handles all UI, data management, and direct calls to the Google AI services.
@@ -161,7 +167,6 @@ This application is a static site and can be easily deployed for free using GitH
 -  Example: <https://code24x7-r.github.io/Flashcard-Gen/>
 
 ## 7. Future Enhancements
--   **Quiz Mode:** A study mode that quizzes the user on the current flashcard set.
 -   **Image Generation:** Add an option to generate relevant images for flashcards using a model like Imagen.
 -   **Spaced Repetition System (SRS):** Implement an algorithm to schedule card reviews for optimal learning.
 -   **Sharing:** Allow users to share their flashcard sets with others via a unique URL.

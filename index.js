@@ -15,6 +15,10 @@ const flashcardsContainer = document.getElementById('flashcardsContainer');
 const errorMessage = document.getElementById('errorMessage');
 const zoomOverlay = document.getElementById('zoomOverlay');
 
+// Quiz Mode elements
+const quizOverlay = document.getElementById('quizOverlay');
+const quizModal = document.getElementById('quizModal');
+
 // API Key Modal elements
 const settingsButton = document.getElementById('settingsButton');
 const apiKeyModalOverlay = document.getElementById('apiKeyModalOverlay');
@@ -38,6 +42,12 @@ const speakerIconSVG = `
 `;
 
 let zoomedCardState = {element: null, parent: null, nextSibling: null};
+
+// Quiz state
+let isQuizActive = false;
+let quizCards = [];
+let currentQuizCardIndex = 0;
+let quizScore = 0;
 
 // --- API Key Management ---
 function getApiKey() {
@@ -342,6 +352,7 @@ function handleExportJson() {
 
 function updateActionButtons() {
   let exportButton = document.getElementById('exportButton');
+  let quizButton = document.getElementById('quizButton');
 
   if (currentFlashcards.length > 0) {
     if (!exportButton) {
@@ -351,8 +362,18 @@ function updateActionButtons() {
       exportButton.addEventListener('click', handleExportJson);
       buttonContainer.appendChild(exportButton);
     }
+    if (!quizButton) {
+      quizButton = document.createElement('button');
+      quizButton.id = 'quizButton';
+      quizButton.textContent = 'Start Quiz';
+      quizButton.classList.add('button-secondary');
+      quizButton.addEventListener('click', startQuiz);
+      // Insert quiz button before the settings button for better layout
+      settingsButton.parentNode.insertBefore(quizButton, settingsButton);
+    }
   } else {
     if (exportButton) exportButton.remove();
+    if (quizButton) quizButton.remove();
   }
 }
 
@@ -619,7 +640,7 @@ clearButton.addEventListener('click', () => {
   localStorage.removeItem('flashcardAppState');
 });
 
-// --- New Zoom Logic ---
+// --- Zoom Logic ---
 
 function zoomOut() {
   if (!zoomedCardState.element) return;
@@ -691,6 +712,215 @@ document.addEventListener('keydown', (e) => {
     }
   }
 });
+
+// --- Quiz Mode Logic ---
+
+function shuffleArray(array) {
+  // Fisher-Yates shuffle
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+function startQuiz() {
+  if (currentFlashcards.length === 0) return;
+  isQuizActive = true;
+  quizCards = shuffleArray([...currentFlashcards]);
+  currentQuizCardIndex = 0;
+  quizScore = 0;
+  quizOverlay.classList.add('visible');
+  renderQuizQuestion();
+}
+
+function endQuiz() {
+  isQuizActive = false;
+  quizOverlay.classList.remove('visible');
+  quizModal.innerHTML = ''; // Clear content
+}
+
+function renderQuizQuestion() {
+  quizModal.innerHTML = ''; // Clear previous question
+  const card = quizCards[currentQuizCardIndex];
+
+  const header = document.createElement('div');
+  header.className = 'quiz-header';
+  header.innerHTML = `
+    <span class="quiz-header-info" id="quizProgress">Card ${
+      currentQuizCardIndex + 1
+    } of ${quizCards.length}</span>
+    <span class="quiz-header-info" id="quizScore">Score: ${quizScore} / ${currentQuizCardIndex}</span>
+  `;
+
+  const termContainer = document.createElement('div');
+  termContainer.className = 'quiz-term-container';
+  const termDiv = document.createElement('div');
+  termDiv.id = 'quizTerm';
+  termDiv.className = 'term';
+  termDiv.innerHTML = DOMPurify.sanitize(marked.parse(card.term));
+  termContainer.appendChild(termDiv);
+
+  const answerArea = document.createElement('textarea');
+  answerArea.id = 'quizAnswer';
+  answerArea.placeholder = 'Type the definition here...';
+  answerArea.setAttribute('aria-label', 'Your answer for the definition');
+
+  const feedbackDiv = document.createElement('div');
+  feedbackDiv.className = 'quiz-feedback';
+  feedbackDiv.id = 'quizFeedback';
+
+  const buttonsDiv = document.createElement('div');
+  buttonsDiv.className = 'quiz-buttons';
+  const submitButton = document.createElement('button');
+  submitButton.id = 'submitAnswerButton';
+  submitButton.textContent = 'Submit Answer';
+
+  const endQuizButton = document.createElement('button');
+  endQuizButton.textContent = 'End Quiz';
+  endQuizButton.className = 'button-secondary';
+  endQuizButton.addEventListener('click', endQuiz);
+
+  buttonsDiv.appendChild(submitButton);
+  buttonsDiv.appendChild(endQuizButton);
+
+  quizModal.append(header, termContainer, answerArea, feedbackDiv, buttonsDiv);
+  answerArea.focus();
+
+  submitButton.addEventListener('click', async () => {
+    const userAnswer = answerArea.value.trim();
+    if (!userAnswer) {
+      feedbackDiv.textContent = 'Please enter an answer.';
+      feedbackDiv.className = 'quiz-feedback incorrect';
+      return;
+    }
+    submitButton.disabled = true;
+    feedbackDiv.textContent = 'Checking...';
+    feedbackDiv.className = 'quiz-feedback';
+
+    try {
+      const result = await checkAnswerWithAI(
+        card.term,
+        card.definition,
+        userAnswer,
+      );
+      feedbackDiv.textContent = result.feedback;
+      if (result.isCorrect) {
+        quizScore++;
+        feedbackDiv.classList.add('correct');
+      } else {
+        feedbackDiv.classList.add('incorrect');
+      }
+      document.getElementById('quizScore').textContent =
+        `Score: ${quizScore} / ${currentQuizCardIndex + 1}`;
+
+      // Replace submit with next/reveal buttons
+      const nextButton = document.createElement('button');
+      nextButton.textContent = 'Next Question';
+      nextButton.addEventListener('click', () => {
+        currentQuizCardIndex++;
+        if (currentQuizCardIndex < quizCards.length) {
+          renderQuizQuestion();
+        } else {
+          showQuizSummary();
+        }
+      });
+
+      buttonsDiv.innerHTML = ''; // Clear old buttons
+      if (!result.isCorrect) {
+        const revealButton = document.createElement('button');
+        revealButton.textContent = 'Reveal Answer';
+        revealButton.className = 'button-secondary';
+        revealButton.addEventListener('click', () => {
+          const correctAnswerDiv = document.createElement('div');
+          correctAnswerDiv.className = 'correct-answer';
+          correctAnswerDiv.innerHTML = `<b>Correct Answer:</b> ${DOMPurify.sanitize(
+            marked.parse(card.definition),
+          )}`;
+          feedbackDiv.appendChild(correctAnswerDiv);
+          revealButton.disabled = true;
+        });
+        buttonsDiv.appendChild(revealButton);
+      }
+      buttonsDiv.appendChild(nextButton);
+      buttonsDiv.appendChild(endQuizButton);
+    } catch (error) {
+      console.error('Quiz answer check error:', error);
+      feedbackDiv.textContent = `Error checking answer: ${error.message}`;
+      feedbackDiv.className = 'quiz-feedback incorrect';
+      submitButton.disabled = false;
+    }
+  });
+}
+
+async function checkAnswerWithAI(term, definition, userAnswer) {
+  const apiKey = getApiKey();
+  if (!apiKey) throw new Error('API Key is missing.');
+  const ai = new GoogleGenAI({apiKey});
+
+  const prompt = `You are an expert quiz evaluator. Your task is to determine if a user's answer is correct based on a provided definition.
+The term being quizzed is: "${term}".
+The correct definition is: "${definition}".
+The user's answer is: "${userAnswer}".
+Evaluate the user's answer for correctness. The answer can be considered correct if it is semantically similar or captures the main points of the correct definition, even if it's not a word-for-word match. Provide a brief, one-sentence feedback explanation for why the answer is correct or incorrect. Respond ONLY with a JSON object.`;
+
+  const result = await ai.models.generateContent({
+    model: 'gemini-2.5-flash',
+    contents: prompt,
+    config: {
+      responseMimeType: 'application/json',
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          isCorrect: {
+            type: Type.BOOLEAN,
+            description:
+              "True if the user's answer is semantically correct, false otherwise.",
+          },
+          feedback: {
+            type: Type.STRING,
+            description:
+              "A brief, one-sentence explanation for why the answer is correct or incorrect, to be shown to the user (e.g., 'That's right! You captured the main idea.' or 'Not quite, you missed the key point about...')",
+          },
+        },
+        required: ['isCorrect', 'feedback'],
+      },
+    },
+  });
+
+  return JSON.parse(result.text);
+}
+
+function showQuizSummary() {
+  quizModal.innerHTML = '';
+  const percentage =
+    quizCards.length > 0 ? Math.round((quizScore / quizCards.length) * 100) : 0;
+
+  const summaryDiv = document.createElement('div');
+  summaryDiv.className = 'quiz-summary';
+  summaryDiv.innerHTML = `
+    <h2>Quiz Complete!</h2>
+    <div class="quiz-summary-score">${percentage}%</div>
+    <div class="quiz-summary-details">You answered ${quizScore} out of ${quizCards.length} questions correctly.</div>
+  `;
+
+  const buttonsDiv = document.createElement('div');
+  buttonsDiv.className = 'quiz-buttons';
+
+  const tryAgainButton = document.createElement('button');
+  tryAgainButton.textContent = 'Try Again';
+  tryAgainButton.addEventListener('click', startQuiz);
+
+  const backButton = document.createElement('button');
+  backButton.textContent = 'Back to Flashcards';
+  backButton.className = 'button-secondary';
+  backButton.addEventListener('click', endQuiz);
+
+  buttonsDiv.appendChild(tryAgainButton);
+  buttonsDiv.appendChild(backButton);
+  summaryDiv.appendChild(buttonsDiv);
+  quizModal.appendChild(summaryDiv);
+}
 
 // Load any saved state when the app starts
 document.addEventListener('DOMContentLoaded', () => {

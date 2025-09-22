@@ -60,7 +60,7 @@
         <rect width="220" height="150" rx="12" fill="#ffffff" />
         <!-- The "Term" text on the card -->
         <text x="20" y="50" font-family="Roboto, sans-serif" font-size="20" font-weight="500" fill="#1e293b">Term:</text>
-        <text x="20" y="85" font-family="Roboto, sans-serif" font-size="28" font-weight="bold" fill="#4f46e5">10 common terms in criminal law</text>
+        <text x="20" y="85" font-family="Roboto, sans-serif" font-size="28" font-weight="bold" fill="#4f46e5">Gemini</text>
         <!-- AI Sparkle on the card -->
         <path d="M180 20 L185 35 L200 40 L185 45 L180 60 L175 45 L160 40 L175 35 Z" fill="#f59e0b" />
       </g>
@@ -89,6 +89,12 @@
     <footer id="appFooter"></footer>
   </div>
   <div id="zoomOverlay"></div>
+  <!-- Quiz Mode Modal -->
+  <div id="quizOverlay" class="modal-overlay">
+    <div id="quizModal" class="modal-content quiz-modal">
+      <!-- Quiz content will be dynamically generated here -->
+    </div>
+  </div>
   <!-- API Key Modal -->
   <div id="apiKeyModalOverlay" class="modal-overlay">
     <div id="apiKeyModal" class="modal-content">
@@ -97,6 +103,10 @@
       <p>
         To generate flashcards, please provide your own Gemini API key. You can get a free key from
         <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">Google AI Studio</a>.
+      </p>
+      <p>
+        For more information on features and setup, please see the
+        <a href="README.md" target="_blank" rel="noopener noreferrer">README file</a>.
       </p>
       <div class="input-group">
         <label for="apiKeyInput" class="sr-only">Gemini API Key</label>
