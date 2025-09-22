@@ -139,7 +139,27 @@ This application runs entirely in your browser. To use the AI features, you must
 2.  **Provide API Key:** Follow the on-screen instructions to enter your Gemini API key.
 3.  **Usage:** Enter a topic in the text area and click "Generate Flashcards".
 
-## 6. Future Enhancements
+## 6. Deployment to GitHub Pages
+
+This application is a static site and can be easily deployed for free using GitHub Pages.
+
+1.  **Create a GitHub Repository:** If you haven't already, create a new repository on GitHub and push the project files (`index.html`, `index.css`, `index.tsx`, etc.) to it.
+
+2.  **Navigate to Settings:** In your repository's main page on GitHub, click on the **Settings** tab.
+
+3.  **Go to Pages:** In the left sidebar, click on **Pages**.
+
+4.  **Configure the Source:**
+    *   Under "Build and deployment", for the "Source" option, select **Deploy from a branch**.
+    *   Under "Branch", select your main branch (usually `main` or `master`).
+    *   For the folder, select **`/ (root)`**.
+    *   Click **Save**.
+
+5.  **Wait for Deployment:** GitHub will start a process to deploy your site. This may take a few minutes. You can monitor the progress in the "Actions" tab of your repository.
+
+6.  **Access Your Site:** Once the deployment is complete, the URL for your live site will be displayed at the top of the Pages settings. It will typically be in the format: `https://<your-username>.github.io/<your-repository-name>/`.
+
+## 7. Future Enhancements
 -   **Quiz Mode:** A study mode that quizzes the user on the current flashcard set.
 -   **Image Generation:** Add an option to generate relevant images for flashcards using a model like Imagen.
 -   **Spaced Repetition System (SRS):** Implement an algorithm to schedule card reviews for optimal learning.

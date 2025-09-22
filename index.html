@@ -1,4 +1,11 @@
-<script type="importmap">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flashcard-Gen</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <script type="importmap">
   {
     "imports": {
       "@google/genai": "https://esm.sh/@google/genai@^0.7.0",
@@ -11,7 +18,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-
+  <link rel="stylesheet" href="index.css">
+  <script src="index.tsx" type="module" defer></script>
+</head>
+<body>
   <div class="container">
     <h1>Flashcard Generator</h1>
     <svg id="heroImage" viewBox="0 0 800 250" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="heroImageTitle">
@@ -50,7 +60,7 @@
         <rect width="220" height="150" rx="12" fill="#ffffff" />
         <!-- The "Term" text on the card -->
         <text x="20" y="50" font-family="Roboto, sans-serif" font-size="20" font-weight="500" fill="#1e293b">Term:</text>
-        <text x="20" y="85" font-family="Roboto, sans-serif" font-size="28" font-weight="bold" fill="#4f46e5">Gemini</text>
+        <text x="20" y="85" font-family="Roboto, sans-serif" font-size="28" font-weight="bold" fill="#4f46e5">10 most difficult legal terms in criminal law</text>
         <!-- AI Sparkle on the card -->
         <path d="M180 20 L185 35 L200 40 L185 45 L180 60 L175 45 L160 40 L175 35 Z" fill="#f59e0b" />
       </g>
@@ -61,7 +71,7 @@
     <div class="controls">
       <textarea
         id="topicInput"
-        placeholder="Enter topic (e.g., The 20 most famous emporers of Ancient Rome) or 'Term: Definition' pairs (one per line)"
+        placeholder="Enter topic (e.g., The 20 most (in)famous emporers of Ancient Rome) or 'Term: Definition' pairs (one per line)"
         aria-label="Topic or terms and definitions"
       ></textarea>
       <div id="buttonContainer" class="button-container">
@@ -98,3 +108,5 @@
       </div>
     </div>
   </div>
+</body>
+</html>
