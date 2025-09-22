@@ -1,0 +1,40 @@
+<svg width="800" height="250" viewBox="0 0 800 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Define Gradient -->
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5" />
+      <!-- Indigo 600 -->
+      <stop offset="100%" stop-color="#c026d3" />
+      <!-- Fuchsia 700 -->
+    </linearGradient>
+    <filter id="blur">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="30" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="250" rx="12" fill="url(#bg-gradient)" />
+
+  <!-- Decorative Glows / Orbs -->
+  <circle cx="700" cy="50" r="100" fill="#a21caf" opacity="0.2" filter="url(#blur)" />
+  <circle cx="100" cy="200" r="80" fill="#6366f1" opacity="0.2" filter="url(#blur)" />
+
+  <!-- Text Content -->
+  <text x="40" y="110" font-family="'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="72" font-weight="bold" fill="white" letter-spacing="-2">
+    Flashcard-Gen
+  </text>
+  <text x="42" y="160" font-family="'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="24" fill="white" opacity="0.85">
+    Learn smarter, not harder.
+  </text>
+
+  <!-- Flashcard & AI Element -->
+  <g transform="translate(550, 40) rotate(10)">
+    <!-- The Flashcard -->
+    <rect width="220" height="150" rx="12" fill="#ffffff" />
+    <!-- The "Term" text on the card -->
+    <text x="20" y="50" font-family="Roboto, sans-serif" font-size="20" font-weight="500" fill="#1e293b">Term:</text>
+    <text x="20" y="85" font-family="Roboto, sans-serif" font-size="28" font-weight="bold" fill="#4f46e5">Gemini</text>
+    <!-- AI Sparkle on the card -->
+    <path d="M180 20 L185 35 L200 40 L185 45 L180 60 L175 45 L160 40 L175 35 Z" fill="#f59e0b" />
+  </g>
+</svg>

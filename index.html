@@ -1,0 +1,100 @@
+<script type="importmap">
+  {
+    "imports": {
+      "@google/genai": "https://esm.sh/@google/genai@^0.7.0",
+      "marked": "https://esm.sh/marked@^4.3.0",
+      "dompurify": "https://esm.sh/dompurify@^3.0.6"
+    }
+  }
+  </script>
+  <!-- Add Google Fonts Link -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+  <div class="container">
+    <h1>Flashcard Generator</h1>
+    <svg id="heroImage" viewBox="0 0 800 250" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="heroImageTitle">
+      <title id="heroImageTitle">A vibrant hero image for Flashcard-Gen showing the title and a stylized flashcard with an AI sparkle icon.</title>
+      <!-- Define Gradient -->
+      <defs>
+        <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#4f46e5" />
+          <!-- Indigo 600 -->
+          <stop offset="100%" stop-color="#c026d3" />
+          <!-- Fuchsia 700 -->
+        </linearGradient>
+        <filter id="blur">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="30" />
+        </filter>
+      </defs>
+    
+      <!-- Background -->
+      <rect width="800" height="250" rx="12" fill="url(#bg-gradient)" />
+    
+      <!-- Decorative Glows / Orbs -->
+      <circle cx="700" cy="50" r="100" fill="#a21caf" opacity="0.2" filter="url(#blur)" />
+      <circle cx="100" cy="200" r="80" fill="#6366f1" opacity="0.2" filter="url(#blur)" />
+    
+      <!-- Text Content -->
+      <text x="40" y="110" font-family="'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="72" font-weight="bold" fill="white" letter-spacing="-2">
+        Flashcard-Gen
+      </text>
+      <text x="42" y="160" font-family="'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="24" fill="white" opacity="0.85">
+        Learn smarter, not harder.
+      </text>
+    
+      <!-- Flashcard & AI Element -->
+      <g transform="translate(550, 40) rotate(10)">
+        <!-- The Flashcard -->
+        <rect width="220" height="150" rx="12" fill="#ffffff" />
+        <!-- The "Term" text on the card -->
+        <text x="20" y="50" font-family="Roboto, sans-serif" font-size="20" font-weight="500" fill="#1e293b">Term:</text>
+        <text x="20" y="85" font-family="Roboto, sans-serif" font-size="28" font-weight="bold" fill="#4f46e5">Gemini</text>
+        <!-- AI Sparkle on the card -->
+        <path d="M180 20 L185 35 L200 40 L185 45 L180 60 L175 45 L160 40 L175 35 Z" fill="#f59e0b" />
+      </g>
+    </svg>
+    <p>
+      Enter a topic or a list of terms and definitions to generate flashcards using the Gemini API.
+    </p>
+    <div class="controls">
+      <textarea
+        id="topicInput"
+        placeholder="Enter topic (e.g., The 20 most famous emporers of Ancient Rome) or 'Term: Definition' pairs (one per line)"
+        aria-label="Topic or terms and definitions"
+      ></textarea>
+      <div id="buttonContainer" class="button-container">
+        <button id="generateButton">Generate Flashcards</button>
+        <button id="importButton">Import from File</button>
+        <button id="clearButton" class="button-secondary">Clear</button>
+        <button id="settingsButton" class="button-secondary">Settings</button>
+        <!-- Save/Export buttons will be injected here -->
+      </div>
+    </div>
+    <div id="errorMessage" class="error-message"></div>
+    <div id="flashcardsContainer" class="flashcards-container" aria-live="polite">
+      <!-- Flashcards will be generated here -->
+    </div>
+    <footer id="appFooter"></footer>
+  </div>
+  <div id="zoomOverlay"></div>
+  <!-- API Key Modal -->
+  <div id="apiKeyModalOverlay" class="modal-overlay">
+    <div id="apiKeyModal" class="modal-content">
+      <button id="closeApiKeyModalButton" class="close-button" aria-label="Close settings">&times;</button>
+      <h2>Gemini API Key</h2>
+      <p>
+        To generate flashcards, please provide your own Gemini API key. You can get a free key from
+        <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">Google AI Studio</a>.
+      </p>
+      <div class="input-group">
+        <label for="apiKeyInput" class="sr-only">Gemini API Key</label>
+        <input type="password" id="apiKeyInput" placeholder="Enter your API key here">
+      </div>
+      <div id="modalErrorMessage" class="error-message"></div>
+      <div class="modal-buttons">
+        <button id="saveApiKeyButton">Save Key</button>
+      </div>
+    </div>
+  </div>
