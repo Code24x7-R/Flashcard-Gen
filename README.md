@@ -158,6 +158,7 @@ This application is a static site and can be easily deployed for free using GitH
 5.  **Wait for Deployment:** GitHub will start a process to deploy your site. This may take a few minutes. You can monitor the progress in the "Actions" tab of your repository.
 
 6.  **Access Your Site:** Once the deployment is complete, the URL for your live site will be displayed at the top of the Pages settings. It will typically be in the format: `https://<your-username>.github.io/<your-repository-name>/`.
+-  Example: <https://code24x7-r.github.io/Flashcard-Gen/>
 
 ## 7. Future Enhancements
 -   **Quiz Mode:** A study mode that quizzes the user on the current flashcard set.
