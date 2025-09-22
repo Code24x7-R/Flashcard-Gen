@@ -95,6 +95,15 @@
       <!-- Quiz content will be dynamically generated here -->
     </div>
   </div>
+  <!-- README Modal -->
+  <div id="readmeModalOverlay" class="modal-overlay">
+    <div id="readmeModal" class="modal-content">
+      <button id="closeReadmeModalButton" class="close-button" aria-label="Close README">&times;</button>
+      <div id="readmeContent" role="document">
+        <!-- README content will be loaded here -->
+      </div>
+    </div>
+  </div>
   <!-- API Key Modal -->
   <div id="apiKeyModalOverlay" class="modal-overlay">
     <div id="apiKeyModal" class="modal-content">
@@ -106,7 +115,7 @@
       </p>
       <p>
         For more information on features and setup, please see the
-        <a href="README.md" target="_blank" rel="noopener noreferrer">README file</a>.
+        <a href="#" id="openReadmeLink">README file</a>.
       </p>
       <div class="input-group">
         <label for="apiKeyInput" class="sr-only">Gemini API Key</label>

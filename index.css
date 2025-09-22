@@ -499,6 +499,7 @@ footer {
   color: light-dark(var(--light-primary), var(--dark-primary));
   text-decoration: none;
   font-weight: 500;
+  cursor: pointer;
 }
 .modal-content a:hover {
   text-decoration: underline;
@@ -660,4 +661,78 @@ footer {
   font-size: 1.2em;
   color: light-dark(var(--light-text-secondary), var(--dark-text-secondary));
   margin-bottom: 20px;
+}
+
+/* README Modal Styles */
+#readmeModal {
+  max-width: 800px;
+  width: 90%;
+  height: 80vh;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+#readmeContent {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding-right: 20px; /* Space for scrollbar */
+}
+
+#readmeContent h1,
+#readmeContent h2,
+#readmeContent h3 {
+  color: light-dark(var(--light-primary), var(--dark-primary));
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  border-bottom: 1px solid light-dark(var(--light-border), var(--dark-border));
+  padding-bottom: 0.3em;
+}
+
+#readmeContent h1 { font-size: 1.8em; }
+#readmeContent h2 { font-size: 1.5em; }
+#readmeContent h3 { font-size: 1.2em; }
+
+#readmeContent p {
+  line-height: 1.7;
+}
+
+#readmeContent a {
+  color: light-dark(var(--light-primary), var(--dark-primary));
+}
+
+#readmeContent ul,
+#readmeContent ol {
+  padding-left: 25px;
+}
+
+#readmeContent li {
+  margin-bottom: 0.5em;
+}
+
+#readmeContent code {
+  background-color: light-dark(var(--light-secondary-bg), var(--dark-secondary-bg));
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.9em;
+}
+
+#readmeContent pre {
+  background-color: light-dark(var(--light-secondary-bg), var(--dark-secondary-bg));
+  padding: 1em;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+#readmeContent pre code {
+  padding: 0;
+  background: none;
+}
+
+#readmeContent img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1em 0;
 }

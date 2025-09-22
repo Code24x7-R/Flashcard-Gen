@@ -19,6 +19,12 @@ const zoomOverlay = document.getElementById('zoomOverlay');
 const quizOverlay = document.getElementById('quizOverlay');
 const quizModal = document.getElementById('quizModal');
 
+// README Modal elements
+const readmeModalOverlay = document.getElementById('readmeModalOverlay');
+const readmeContent = document.getElementById('readmeContent');
+const closeReadmeModalButton = document.getElementById('closeReadmeModalButton');
+const openReadmeLink = document.getElementById('openReadmeLink');
+
 // API Key Modal elements
 const settingsButton = document.getElementById('settingsButton');
 const apiKeyModalOverlay = document.getElementById('apiKeyModalOverlay');
@@ -48,6 +54,9 @@ let isQuizActive = false;
 let quizCards = [];
 let currentQuizCardIndex = 0;
 let quizScore = 0;
+
+// Cache for README content
+let readmeHtml = null;
 
 // --- API Key Management ---
 function getApiKey() {
@@ -92,6 +101,46 @@ saveApiKeyButton.addEventListener('click', () => {
     }, 3000);
   } else {
     modalErrorMessage.textContent = 'Please enter a valid API key.';
+  }
+});
+
+// --- README Modal ---
+async function openReadmeModal() {
+  readmeModalOverlay.classList.add('visible');
+  if (readmeHtml) {
+    readmeContent.innerHTML = readmeHtml;
+    return;
+  }
+
+  try {
+    readmeContent.innerHTML = '<p>Loading...</p>';
+    const response = await fetch('README.md');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const markdown = await response.text();
+    const dirtyHtml = marked.parse(markdown);
+    readmeHtml = DOMPurify.sanitize(dirtyHtml); // Cache the sanitized HTML
+    readmeContent.innerHTML = readmeHtml;
+  } catch (error) {
+    console.error('Error fetching or rendering README:', error);
+    readmeContent.innerHTML =
+      '<p class="error-message">Could not load README. Please try again later.</p>';
+  }
+}
+
+function closeReadmeModal() {
+  readmeModalOverlay.classList.remove('visible');
+}
+
+openReadmeLink.addEventListener('click', (e) => {
+  e.preventDefault();
+  openReadmeModal();
+});
+closeReadmeModalButton.addEventListener('click', closeReadmeModal);
+readmeModalOverlay.addEventListener('click', (e) => {
+  if (e.target === readmeModalOverlay) {
+    closeReadmeModal();
   }
 });
 
@@ -696,23 +745,6 @@ zoomOverlay.addEventListener('pointerup', (e) => {
   }
 });
 
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && zoomOverlay.classList.contains('visible')) {
-    zoomOut();
-  }
-  // Allow opening with keyboard when focus is on a card
-  if (
-    (e.key === 'Enter' || e.key === ' ') &&
-    !zoomOverlay.classList.contains('visible')
-  ) {
-    const card = document.activeElement?.closest('.flashcard:not(.editing)');
-    if (card) {
-      e.preventDefault();
-      zoomIn(card);
-    }
-  }
-});
-
 // --- Quiz Mode Logic ---
 
 function shuffleArray(array) {
@@ -922,7 +954,39 @@ function showQuizSummary() {
   quizModal.appendChild(summaryDiv);
 }
 
-// Load any saved state when the app starts
+// --- Global Event Handlers ---
+document.addEventListener('keydown', (e) => {
+  // Handle Escape key to close any open modal
+  if (e.key === 'Escape') {
+    if (readmeModalOverlay.classList.contains('visible')) {
+      closeReadmeModal();
+    } else if (apiKeyModalOverlay.classList.contains('visible')) {
+      closeApiKeyModal();
+    } else if (zoomOverlay.classList.contains('visible')) {
+      zoomOut();
+    }
+    // Note: Quiz modal is not closed with Escape to prevent accidental progress loss.
+  }
+
+  // Handle Enter/Space to zoom in on a focused card, but only if no modals are open.
+  if (e.key === 'Enter' || e.key === ' ') {
+    const isModalOpen =
+      readmeModalOverlay.classList.contains('visible') ||
+      apiKeyModalOverlay.classList.contains('visible') ||
+      quizOverlay.classList.contains('visible') ||
+      zoomOverlay.classList.contains('visible');
+
+    if (!isModalOpen) {
+      const card = document.activeElement?.closest('.flashcard:not(.editing)');
+      if (card) {
+        e.preventDefault();
+        zoomIn(card);
+      }
+    }
+  }
+});
+
+// --- App Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
   loadStateFromLocalStorage();
   displayAppVersion();
